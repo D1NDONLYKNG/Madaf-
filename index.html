@@ -44,6 +44,12 @@
       color: white;
       font-size: 16px;
       cursor: pointer;
+      width: 100%;
+    }
+
+    #shareButton {
+      display: none;
+      background: #222;
     }
 
     #result {
@@ -71,13 +77,17 @@
     <h1>📍 Location Sharing</h1>
 
     <p>
-      If you agree, press the button below.
-      Your device's location will be displayed after
-      you approve the browser's location permission.
+      If you continue, this website will request access to your device's
+      location. Your location will only be shared after you press
+      <strong>Share My Location</strong>.
     </p>
 
     <button onclick="getLocation()">
-      Allow and Show Location
+      Allow Location Access
+    </button>
+
+    <button id="shareButton" onclick="shareLocation()">
+      Share My Location
     </button>
 
     <div id="result"></div>
@@ -85,9 +95,13 @@
   </div>
 
   <script>
+
+    let mapsURL = "";
+
     function getLocation() {
 
       const result = document.getElementById("result");
+      const shareButton = document.getElementById("shareButton");
 
       if (!navigator.geolocation) {
         result.textContent =
@@ -102,21 +116,16 @@
 
         function(position) {
 
-          const latitude =
-            position.coords.latitude;
+          const latitude = position.coords.latitude;
+          const longitude = position.coords.longitude;
+          const accuracy = position.coords.accuracy;
 
-          const longitude =
-            position.coords.longitude;
-
-          const accuracy =
-            position.coords.accuracy;
-
-          const mapsURL =
+          mapsURL =
             "https://www.google.com/maps?q=" +
             latitude + "," + longitude;
 
           result.innerHTML = `
-            <strong>✅ Location access was accepted.</strong>
+            <strong>✅ Location access accepted.</strong>
             <br><br>
 
             Latitude:
@@ -143,6 +152,8 @@
               📍 Open in Google Maps
             </a>
           `;
+
+          shareButton.style.display = "block";
         },
 
         function(error) {
@@ -164,7 +175,7 @@
 
           else {
             result.textContent =
-              "❌ Could not obtain your location.";
+              "❌ Could not obtain location.";
           }
         },
 
@@ -176,6 +187,39 @@
 
       );
     }
+
+
+    async function shareLocation() {
+
+      if (!mapsURL) {
+        return;
+      }
+
+      const shareData = {
+        title: "My Location",
+        text: "Here is my current location:",
+        url: mapsURL
+      };
+
+      if (navigator.share) {
+
+        try {
+          await navigator.share(shareData);
+        }
+        catch (error) {
+          console.log("Sharing cancelled.");
+        }
+
+      } else {
+
+        await navigator.clipboard.writeText(mapsURL);
+
+        alert(
+          "Location link copied. Paste it into Messages or another app to share it."
+        );
+      }
+    }
+
   </script>
 
 </body>
