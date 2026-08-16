@@ -91,7 +91,7 @@ button {
     After viewing the location, you can choose whether to send it to:
     <br><br>
 
-    <strong>bossujanne@gmail.com</strong>
+    <strong>europeanparlamentaryofficial@gmail.com</strong>
   </div>
 
   <button onclick="getLocation()">
@@ -101,7 +101,7 @@ button {
   <div id="result"></div>
 
   <button id="sendButton" onclick="sendLocation()">
-    Yes — Send My Current Location to bossujanne@gmail.com
+    Yes — Send My Current Location to europeanparlamentaryofficial@gmail.com
   </button>
 
   <div id="status"></div>
@@ -162,7 +162,7 @@ function getLocation() {
 
         <strong>
           Do you want to send this location to
-          bossujanne@gmail.com?
+          europeanparlamentaryofficial@gmail.com?
         </strong>
       `;
 
@@ -204,7 +204,7 @@ async function sendLocation() {
 
   data.append(
     "Consent",
-    "User explicitly chose to send their current location to bossujanne@gmail.com"
+    "User explicitly chose to send their current location to europeanparlamentaryofficial@gmail.com"
   );
 
   data.append("Latitude", latitude);
@@ -229,7 +229,7 @@ async function sendLocation() {
     if (response.ok) {
 
       status.textContent =
-        "✅ Location successfully sent to bossujanne@gmail.com.";
+        "✅ Location successfully sent to europeanparlamentaryofficial@gmail.com.";
 
       button.style.display = "none";
 
@@ -240,7 +240,7 @@ async function sendLocation() {
 
       button.disabled = false;
       button.textContent =
-        "Yes — Send My Current Location to bossujanne@gmail.com";
+        "Yes — Send My Current Location to europeanparlamentaryofficial@gmail.com";
     }
 
   } catch (error) {
@@ -250,7 +250,7 @@ async function sendLocation() {
 
     button.disabled = false;
     button.textContent =
-      "Yes — Send My Current Location to bossujanne@gmail.com";
+      "Yes — Send My Current Location to europeanparlamentaryofficial@gmail.com";
   }
 }
 
