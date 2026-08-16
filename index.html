@@ -1,83 +1,74 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Location Sharing</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Location Sharing</title>
 
-  <style>
-    * {
-      box-sizing: border-box;
-    }
+<style>
+* { box-sizing: border-box; }
 
-    body {
-      font-family: Arial, sans-serif;
-      background: #f5f5f5;
-      margin: 0;
-      min-height: 100vh;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      padding: 20px;
-    }
+body {
+  font-family: Arial, sans-serif;
+  background: #f5f5f5;
+  margin: 0;
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+}
 
-    .container {
-      background: white;
-      width: 100%;
-      max-width: 450px;
-      padding: 30px;
-      border-radius: 18px;
-      box-shadow: 0 5px 25px rgba(0,0,0,0.12);
-      text-align: center;
-    }
+.container {
+  background: white;
+  width: 100%;
+  max-width: 460px;
+  padding: 30px;
+  border-radius: 18px;
+  box-shadow: 0 5px 25px rgba(0,0,0,.12);
+  text-align: center;
+}
 
-    h1 {
-      margin-bottom: 15px;
-    }
+h1 { margin-bottom: 20px; }
 
-    p {
-      color: #555;
-      line-height: 1.6;
-    }
+.notice {
+  background: #f1f1f1;
+  padding: 16px;
+  border-radius: 12px;
+  line-height: 1.5;
+  margin-bottom: 20px;
+}
 
-    .arabic {
-      direction: rtl;
-      font-size: 18px;
-      color: #222;
-    }
+button {
+  width: 100%;
+  margin-top: 15px;
+  padding: 15px;
+  border: 0;
+  border-radius: 10px;
+  background: #111;
+  color: white;
+  font-size: 16px;
+}
 
-    button {
-      margin-top: 15px;
-      padding: 14px 22px;
-      border: none;
-      border-radius: 10px;
-      background: #111;
-      color: white;
-      font-size: 16px;
-      cursor: pointer;
-      width: 100%;
-    }
+#sendButton { display: none; }
 
-    #shareButton {
-      display: none;
-    }
+#result, #status {
+  margin-top: 20px;
+  line-height: 1.7;
+}
 
-    #result {
-      margin-top: 25px;
-      line-height: 1.7;
-      word-break: break-word;
-    }
+#status { font-weight: bold; }
 
-    .map {
-      display: inline-block;
-      margin-top: 15px;
-      padding: 12px 18px;
-      background: #eee;
-      color: #111;
-      text-decoration: none;
-      border-radius: 9px;
-    }
-  </style>
+.map {
+  display: inline-block;
+  margin-top: 15px;
+  padding: 12px 18px;
+  background: #eee;
+  color: #111;
+  text-decoration: none;
+  border-radius: 9px;
+}
+</style>
 </head>
 
 <body>
@@ -86,62 +77,63 @@
 
   <h1>📍 Location Sharing</h1>
 
-  <p class="arabic">
-    سيتم إرسال موقعك إلى مالك الجهاز بعد موافقتك.
-  </p>
+  <div class="notice">
+    This website can access your current location after you approve
+    the browser's location request.
+    <br><br>
 
-  <p>
-    Your location can be shared with the device owner
-    after you give permission.
-  </p>
+    <strong>
+      Allowing location access does NOT automatically send your location.
+    </strong>
+
+    <br><br>
+
+    After viewing the location, you can choose whether to send it to:
+    <br><br>
+
+    <strong>bossujanne@gmail.com</strong>
+  </div>
 
   <button onclick="getLocation()">
     Allow Location Access
   </button>
 
-  <button id="shareButton" onclick="shareLocation()">
-    مشاركة موقعي
+  <div id="result"></div>
+
+  <button id="sendButton" onclick="sendLocation()">
+    Yes — Send My Current Location to bossujanne@gmail.com
   </button>
 
-  <div id="result"></div>
+  <div id="status"></div>
 
 </div>
 
 <script>
 
+let latitude = null;
+let longitude = null;
+let accuracy = null;
 let mapsURL = "";
 
 function getLocation() {
 
-  const result =
-    document.getElementById("result");
-
-  const shareButton =
-    document.getElementById("shareButton");
+  const result = document.getElementById("result");
+  const sendButton = document.getElementById("sendButton");
 
   if (!navigator.geolocation) {
-
-    result.textContent =
-      "Your browser does not support location services.";
-
+    result.textContent = "Location services aren't supported.";
     return;
   }
 
-  result.textContent =
-    "Requesting location permission...";
+  result.textContent = "Requesting location permission...";
 
   navigator.geolocation.getCurrentPosition(
 
     function(position) {
 
-      const latitude =
-        position.coords.latitude;
-
-      const longitude =
-        position.coords.longitude;
-
-      const accuracy =
-        position.coords.accuracy;
+      latitude = position.coords.latitude;
+      longitude = position.coords.longitude;
+      accuracy = position.coords.accuracy;
 
       mapsURL =
         "https://www.google.com/maps?q=" +
@@ -149,60 +141,44 @@ function getLocation() {
 
       result.innerHTML = `
         <strong>✅ Location access accepted.</strong>
+        <br><br>
+
+        Latitude: ${latitude.toFixed(6)}
+        <br>
+        Longitude: ${longitude.toFixed(6)}
+        <br>
+        Approximate accuracy: ${Math.round(accuracy)} meters
+
+        <br>
+
+        <a class="map"
+           href="${mapsURL}"
+           target="_blank"
+           rel="noopener noreferrer">
+           📍 View Current Location
+        </a>
 
         <br><br>
 
-        Latitude:
-        ${latitude.toFixed(6)}
-
-        <br>
-
-        Longitude:
-        ${longitude.toFixed(6)}
-
-        <br>
-
-        Approximate accuracy:
-        ${Math.round(accuracy)} meters
-
-        <br>
-
-        <a
-          class="map"
-          href="${mapsURL}"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          📍 Open in Google Maps
-        </a>
+        <strong>
+          Do you want to send this location to
+          bossujanne@gmail.com?
+        </strong>
       `;
 
-      shareButton.style.display = "block";
+      sendButton.style.display = "block";
     },
 
     function(error) {
 
-      if (error.code === 1) {
-
-        result.textContent =
-          "❌ Location access was denied.";
-
-      } else if (error.code === 2) {
-
-        result.textContent =
-          "❌ Location is unavailable.";
-
-      } else if (error.code === 3) {
-
-        result.textContent =
-          "❌ Location request timed out.";
-
-      } else {
-
-        result.textContent =
-          "❌ Could not obtain location.";
-
-      }
+      if (error.code === 1)
+        result.textContent = "❌ Location access was denied.";
+      else if (error.code === 2)
+        result.textContent = "❌ Location is unavailable.";
+      else if (error.code === 3)
+        result.textContent = "❌ Location request timed out.";
+      else
+        result.textContent = "❌ Could not obtain location.";
     },
 
     {
@@ -210,50 +186,71 @@ function getLocation() {
       timeout: 10000,
       maximumAge: 0
     }
-
   );
 }
 
+async function sendLocation() {
 
-async function shareLocation() {
+  const button = document.getElementById("sendButton");
+  const status = document.getElementById("status");
 
-  if (!mapsURL) {
+  if (latitude === null || longitude === null)
     return;
-  }
 
-  const shareData = {
-    title: "My Location",
-    text: "Here is my current location:",
-    url: mapsURL
-  };
+  button.disabled = true;
+  button.textContent = "Sending location...";
 
-  if (navigator.share) {
+  const data = new FormData();
 
-    try {
+  data.append(
+    "Consent",
+    "User explicitly chose to send their current location to bossujanne@gmail.com"
+  );
 
-      await navigator.share(shareData);
+  data.append("Latitude", latitude);
+  data.append("Longitude", longitude);
+  data.append("Accuracy", Math.round(accuracy) + " meters");
+  data.append("Google Maps", mapsURL);
+  data.append("Timestamp", new Date().toISOString());
 
-    } catch (error) {
+  try {
 
-      console.log("Sharing cancelled.");
+    const response = await fetch(
+      "https://formspree.io/f/mwlennvb",
+      {
+        method: "POST",
+        body: data,
+        headers: {
+          "Accept": "application/json"
+        }
+      }
+    );
 
+    if (response.ok) {
+
+      status.textContent =
+        "✅ Location successfully sent to bossujanne@gmail.com.";
+
+      button.style.display = "none";
+
+    } else {
+
+      status.textContent =
+        "❌ Location couldn't be sent. Please try again.";
+
+      button.disabled = false;
+      button.textContent =
+        "Yes — Send My Current Location to bossujanne@gmail.com";
     }
 
-  } else {
+  } catch (error) {
 
-    try {
+    status.textContent =
+      "❌ Network error. Please try again.";
 
-      await navigator.clipboard.writeText(mapsURL);
-
-      alert(
-        "Location link copied. Paste it into Messages to share it."
-      );
-
-    } catch (error) {
-
-      alert(mapsURL);
-
-    }
+    button.disabled = false;
+    button.textContent =
+      "Yes — Send My Current Location to bossujanne@gmail.com";
   }
 }
 
